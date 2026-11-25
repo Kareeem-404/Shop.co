@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-soft: #f1f0f0;
+  --font-display: "Montserrat", Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  min-width: 320px;
+  margin: 0;
+  font-family: "DM Sans", Arial, sans-serif;
+  color: #090909;
+  -webkit-font-smoothing: antialiased;
+}
+html.dark body {
+  background: #090909;
+  color: #fff;
+  color-scheme: dark;
+}
+html:not(.dark) body {
+  color-scheme: light;
+}
+button,
+input {
+  font: inherit;
+}
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

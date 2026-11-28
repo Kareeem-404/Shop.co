@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, Menu, Moon, ShoppingCart, Sun, UserRound, X } from "lucide-react";
+import { ChevronDown, Heart, Menu, Moon, ShoppingCart, Sun, UserRound, X } from "lucide-react";
 import Container from "./Ui-components/Container.jsx";
+import { useCartStore } from "../store/cartStore.js";
 
 export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(
     () => window.localStorage.getItem("shop-co-theme") === "dark",
   );
+  const cartCount = useCartStore((state) =>
+    state.items.reduce((count, item) => count + item.quantity, 0),
+  );
+  const favoriteCount = useCartStore((state) => state.favorites.length);
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     window.localStorage.setItem("shop-co-theme", darkMode ? "dark" : "light");
@@ -28,6 +33,10 @@ export default function Nav() {
   const themeButtonStyle = `${iconStyle} text-current`;
   const linksStyle = `${menuOpen ? "flex" : "hidden"} absolute left-0 right-0 top-full flex-col gap-5 bg-white px-6 py-5 text-black shadow-lg dark:bg-zinc-950 dark:text-white sm:static sm:flex sm:flex-row sm:items-center sm:gap-6 sm:bg-transparent sm:p-0 sm:shadow-none`;
   const linkStyle = "flex items-center gap-1 text-sm transition hover:opacity-60";
+  const cartLinkStyle = `${iconStyle} relative`;
+  const cartBadgeStyle = "absolute -right-1 -top-1 grid min-w-4 place-items-center rounded-full bg-black px-1 text-[9px] font-bold leading-4 text-white dark:bg-white dark:text-black";
+  const favoriteLinkStyle = `${iconStyle} relative`;
+  const favoriteBadgeStyle = cartBadgeStyle;
   // -------------------------- Styles --------------------------
   return (
     <header className={headerStyle}>
@@ -50,8 +59,13 @@ export default function Nav() {
             <a href="/#brands" className={linkStyle} onClick={() => setMenuOpen(false)}>Brands</a>
           </nav>
           <div className={actionsStyle}>
-            <Link aria-label="Shopping cart" to="/" className={iconStyle}>
+            <Link aria-label={`Favorites, ${favoriteCount} items`} to="/favorites" className={favoriteLinkStyle}>
+              <Heart size={21} />
+              {favoriteCount > 0 && <span className={favoriteBadgeStyle}>{favoriteCount}</span>}
+            </Link>
+            <Link aria-label={`Shopping cart, ${cartCount} items`} to="/cart" className={cartLinkStyle}>
               <ShoppingCart size={21} />
+              {cartCount > 0 && <span className={cartBadgeStyle}>{cartCount}</span>}
             </Link>
             <Link aria-label="Account" to="/" className={accountStyle}>
               <UserRound size={21} />
